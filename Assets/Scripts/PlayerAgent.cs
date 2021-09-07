@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
 // 사용자의 입력에따라 좌우로 이동하고 싶다.
 // 필요속성 : 이동속도
 public class PlayerAgent : MonoBehaviour
