@@ -1,7 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using Unity.MLAgents;
+using Unity.MLAgents.Actuators;
+using Unity.MLAgents.Sensors;
 
 // 1. 사용자의 입력에따라 좌우로 이동하고 싶다.
 // 필요속성 : 이동속도
@@ -11,7 +13,7 @@ using UnityEngine;
 // 고려사항 : Ball 과 Player 을 원래대로 돌려놔야한다. 
 // 필요속성 : Ball, Player 의 초기위치
 // 4. 블록을 다 깼으면 다시 시작하게 하고 싶다.
-public class PlayerAgent : MonoBehaviour
+public class PlayerAgent : Agent
 {
     // 필요속성 : 이동속도
     public float speed = 5;
@@ -78,7 +80,7 @@ public class PlayerAgent : MonoBehaviour
         Invoke("ShootBall", 1);
     }
 
-    void Start()
+    public override void Initialize()
     {
         // 객체들의 초기값 기억
         ballInitPos = ball.localPosition;
@@ -91,13 +93,27 @@ public class PlayerAgent : MonoBehaviour
         // 전체 블록 갯수 기억
         totalBlocks = blocks.transform.childCount;
 
+    }
+
+    // 판을 시작할때 호출 함수(콜백)
+    public override void OnEpisodeBegin()
+    {
         Reset(); 
     }
 
-    // 테스트를 위한 치트키
-    public bool isTest = false;
-    // Update is called once per frame
-    void Update()
+    public override void OnActionReceived(ActionBuffers actions)
+    {
+        float dir = actions.DiscreteActions.Array[0];
+        Move(dir);
+    }
+
+    public override void CollectObservations(VectorSensor sensor)
+    {
+        
+    }
+
+    // 테스트를 위해 사람이 직접 action 값을 전달해 주는 기능
+    public override void Heuristic(in ActionBuffers actionsOut)
     {
         // 만약 치트키 사용중이라면
         if (isTest && Input.GetButtonDown("Fire1"))
@@ -121,12 +137,22 @@ public class PlayerAgent : MonoBehaviour
             // => h 를 2 로 놓자
             h = 2;
         }
+
+        actionsOut.DiscreteActions.Array[0] = (int)h;
+    }
+
+    // 테스트를 위한 치트키
+    public bool isTest = false;
+
+
+    private void Move(float h)
+    {
         // 최종 방향값은 h - 1
         h = h - 1;
 
         // 2. 방향이 필요
         // (x, y, z) -> (1, 0, 0)
-        Vector3 v = Vector3.right * h  * speed;
+        Vector3 v = Vector3.right * h * speed;
         //Vector3 v = new Vector3(h, 0, 0);
         Vector3 vt = v * Time.deltaTime;
         // 3. 이동하고 싶다.
