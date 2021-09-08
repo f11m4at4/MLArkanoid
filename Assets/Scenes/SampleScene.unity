@@ -1868,6 +1868,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e78c5367128324a48b83a9bd76288dac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  speed: 5
+  shootAngle: 45
+  shootPower: 5
+  ball: {fileID: 1587561895}
+  blocks: {fileID: 1192945537}
+  isTest: 0
 --- !u!1 &1192945537
 GameObject:
   m_ObjectHideFlags: 0
@@ -2217,6 +2223,7 @@ GameObject:
   - component: {fileID: 1587561893}
   - component: {fileID: 1587561892}
   - component: {fileID: 1587561896}
+  - component: {fileID: 1587561897}
   m_Layer: 0
   m_Name: Ball
   m_TagString: Untagged
@@ -2316,6 +2323,19 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 120
   m_CollisionDetection: 0
+--- !u!114 &1587561897
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1587561891}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 60a78833d28979a4d942b44c0483c40e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  player: {fileID: 984132650}
 --- !u!1 &1681780911
 GameObject:
   m_ObjectHideFlags: 0
