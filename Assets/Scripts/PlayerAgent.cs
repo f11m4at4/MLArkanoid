@@ -103,13 +103,21 @@ public class PlayerAgent : Agent
 
     public override void OnActionReceived(ActionBuffers actions)
     {
+        // 계속 움직이도록 재촉하자 
+        AddReward(-1.0f / MaxStep);
         float dir = actions.DiscreteActions.Array[0];
         Move(dir);
     }
 
     public override void CollectObservations(VectorSensor sensor)
     {
-        
+        // 1. 공의위치
+        sensor.AddObservation(ball.localPosition);
+        // 2. 플레이어의 위치
+        sensor.AddObservation(transform.localPosition);
+        // 3. 공과 플레이어의 거리
+        float distance = Vector3.Distance(ball.localPosition, transform.localPosition);
+        sensor.AddObservation(distance);
     }
 
     // 테스트를 위해 사람이 직접 action 값을 전달해 주는 기능
@@ -167,19 +175,25 @@ public class PlayerAgent : Agent
         if (ball.localPosition.y < transform.localPosition.y)
         {
             // 2. 다시 시작하게 하고 싶다.
-            Reset();
+            // 패널티 보상
+            AddReward(-5);
+            // OnEpisodeBegin() 을 호출
+            EndEpisode();
         }
     }
 
     public void OnBlockHit(GameObject hitBlock)
     {
+        // 칭찬
+        AddReward(0.5f);
         hitBlock.SetActive(false);
         breakCount++;
         // 만약 다 깼다면
         // 만약 breakCount 가 전체 블록갯수 이상이라면
         if(breakCount >= totalBlocks)
         {
-            Reset();
+            AddReward(10);
+            EndEpisode();
         }
     }
 }
